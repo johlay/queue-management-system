@@ -21,7 +21,11 @@ app.set("port:", port);
 
 // Create HTTP server - (Socket.IO server).
 const server = http.createServer(app);
-const io = SocketIO(server);
+const io = SocketIO(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
 // Using socket.js file.
 io.on("connection", require("./socket.js"));
