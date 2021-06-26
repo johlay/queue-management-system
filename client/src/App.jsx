@@ -3,11 +3,16 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Login from "./components/login/Login";
 import Navigation from "./components/navigation/Navigation";
 import NotFound from "./components/notfound/NotFound";
-import Room from "./components/room/Room";
+import Queue from "./components/queue/Queue";
 import socket from "./modules/socket-client";
 import "./App.scss";
 
 class App extends React.Component {
+  state = {
+    queue: null,
+    waitingList: null,
+  };
+
   componentDidMount() {}
 
   componentWillUnmount() {
@@ -24,7 +29,7 @@ class App extends React.Component {
           <main role="main" className="container my-3">
             <Switch>
               <Route exact path="/" component={Login} />
-              <Route path="/room/:id" component={Room} />
+              <Route path="/queue/:id" component={Queue} />
               <Route component={NotFound} />
             </Switch>
           </main>

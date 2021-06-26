@@ -30,8 +30,8 @@ const Navigation = () => {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/room/qms" className="nav-link">
-                  Room: qms
+                <NavLink to="/queue/qms" className="nav-link">
+                  Queue: qms
                 </NavLink>
               </li>
             </ul>

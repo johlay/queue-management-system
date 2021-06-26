@@ -5,7 +5,7 @@ class Login extends React.Component {
   state = {
     name: "",
     location: "",
-    channel: "Channel1",
+    queue: "queue1",
   };
 
   handleOnChange = (e) => {
@@ -16,8 +16,21 @@ class Login extends React.Component {
     // Prevent default action.
     e.preventDefault();
 
+    // Log - delete this.
+    console.log(
+      "Emitting 'join-queue' to Socket.IO-server with the following payload:",
+      this.state
+    );
+
     // Emits a "payload" when user/client join room.
-    socket.emit("join-room", this.state);
+    socket.emit("join-queue", this.state, (status) => {
+      console.log(
+        "Got response to 'join-queue' event from the server:",
+        status
+      );
+
+      this.props.history.push(`/queue/${status.queue}`);
+    });
   };
   render() {
     return (
@@ -27,10 +40,11 @@ class Login extends React.Component {
           <p className="lead mb-5">Please login!</p>
         </div>
 
-        <form id="login-form" onSubmit={this.handleOnSubmit}>
+        <form autoComplete="off" id="login-form" onSubmit={this.handleOnSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name</label>
             <input
+              autoComplete="false"
               type="text"
               id="name"
               className="form-control"
@@ -42,6 +56,7 @@ class Login extends React.Component {
           <div className="form-group">
             <label htmlFor="location">Location</label>
             <input
+              autoComplete="false"
               type="text"
               id="location"
               className="form-control"
@@ -53,13 +68,13 @@ class Login extends React.Component {
           <div className="form-group">
             <label htmlFor="channel">Channel</label>
             <select
-              id="channel"
+              id="queue"
               className="form-control"
               onChange={this.handleOnChange}
             >
-              <option value="Channel1">Channel1</option>
-              <option value="Channel2">Channel2</option>
-              <option value="Channel3">Channel3</option>
+              <option value="queue1">Queue 1</option>
+              <option value="queue2">Queue 2</option>
+              <option value="queue3">Queue 3</option>
             </select>
           </div>
 
