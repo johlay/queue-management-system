@@ -1,0 +1,24 @@
+{
+  "name": "queue-management-system",
+  "version": "1.0.0",
+  "description": "QMS for server side",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "cross-env DEBUG=queue-management-system:*,socket.io:client,socket:io:server nodemon ./server.js",
+    "debug": "cross-env DEBUG=queue-management-system:*,socket.io:client,socket:io:server nodemon --inspect ./server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "debug": "^4.3.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "socket.io": "^4.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
