@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "cross-env DEBUG=queue-management-system:*,socket.io:client,socket:io:server nodemon ./server.js",
+    "dev": "cross-env DEBUG=queue-management-system:* nodemon ./server.js",
     "debug": "cross-env DEBUG=queue-management-system:*,socket.io:client,socket:io:server nodemon --inspect ./server.js"
   },
   "keywords": [],

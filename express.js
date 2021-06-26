@@ -12,6 +12,6 @@ app.use(express.json());
 // Middleware that recognize the incoming Request Object as strings or arrays.
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/", require(".route/index"));
+app.use("/", require("./routes/index"));
 
 module.exports = app;
