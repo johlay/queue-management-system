@@ -7,11 +7,7 @@
 require("dotenv").config();
 
 // Server setup
-// const express = require("express");
 const app = require("./express.js"); // socket.io configuration. Uses express.js file which contain HTTP server.
-
-const port = normalizePort(process.env.PORT || "3001");
-app.set("port:", port);
 
 // Debug
 const debug = require("debug")("queue-management-system:server");
@@ -19,6 +15,9 @@ const http = require("http");
 
 // Socket.IO
 const SocketIO = require("socket.io");
+
+const port = normalizePort(process.env.PORT || "3001");
+app.set("port:", port);
 
 // Create HTTP server - (Socket.IO server).
 const server = http.createServer(app);

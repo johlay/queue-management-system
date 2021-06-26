@@ -6,6 +6,10 @@
 const express = require("express");
 const app = express();
 
+// Cors
+const cors = require("cors");
+app.use(cors());
+
 // Middleware that parses JSON
 app.use(express.json());
 
