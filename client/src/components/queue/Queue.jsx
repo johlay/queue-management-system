@@ -1,4 +1,5 @@
 import React from "react";
+import Moment from "react-moment";
 import socket from "../../modules/socket-client";
 
 class Queue extends React.Component {
@@ -34,6 +35,9 @@ class Queue extends React.Component {
   }
 
   componentWillUnmount() {
+    // Leave queue.
+    socket.emit("leave-room", this.state.queue);
+
     // Cancel listeners for updated waiting list - so we no longer listen for updated waiting list (when user/client is no longer in room.)
     socket.off("updated-waiting-list");
   }
@@ -43,14 +47,26 @@ class Queue extends React.Component {
       <div className="component-Queue">
         {this.state.queue ? (
           <>
-            <h1>{this.state.queue}</h1>
-            <p className="lead">Waiting list</p>
+            <div className="text-center">
+              <h1>{this.state.queue}</h1>
+              <p className="lead">Waiting list</p>
+            </div>
 
             <ol className="list-group">
               {this.state.waitingList.map((user, index) => {
                 return (
-                  <li className="list-group-item" key={index}>
-                    {user.name}
+                  <li
+                    className="list-group-item"
+                    title={user.location}
+                    key={index}
+                  >
+                    {++index}.{user.name}
+                    <span className="">
+                      <Moment date={user.waitingSince} format="HH:mm" unix />
+                    </span>
+                    <span className="">
+                      <Moment date={user.waitingSince} fromNow unix />
+                    </span>
                   </li>
                 );
               })}

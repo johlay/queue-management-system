@@ -22,6 +22,21 @@ function addUserToQueue(queue, name, location, socketId) {
   });
 }
 
+// Remove user from a queue.
+function removeUserFromQueue(queue, socketId) {
+  // remove user from the queue's waiting list.
+  const waitingList = getWaitingListForQueue(queue).filter(
+    (user) => user.socketId !== socketId
+  );
+  setWaitingListForQueue(queue, waitingList);
+
+  // send the updated waiting list to all other users in the queue.
+  this.broadcast.to(queue).emit("updated-waiting-list", {
+    queue,
+    waitingList,
+  });
+}
+
 // Get waiting list for queue.
 function getWaitingListForQueue(queue) {
   return queues[queue].waitingList;
@@ -35,9 +50,23 @@ function handleGetWaitingList(queue, callback) {
   });
 }
 
+// Set waiting list for queue.
+function setWaitingListForQueue(queue, waitingList) {
+  return (queues[queue].waitingList = waitingList);
+}
+
 // Handle when user disconnects.
 function handleUserDisconnect() {
   debug(`Client ${this.id} disconnected`);
+
+  const room = Object.keys(queues).queueNames.find((queue) =>
+    queues[queue].waitingList.find((user) => user.socketId === this.id)
+  );
+
+  if (room) {
+    debug(`Found socket still in queue '${queue}', removing...`);
+    removeUserFromQueue(queue, this.id);
+  }
 }
 
 // Handle when user is requesting to join a queue.
@@ -65,6 +94,17 @@ function handleJoinQueue({ name, location, queue }, callback) {
   });
 }
 
+// Handle a request to leave a queue.
+function handleLeaveQueue(queue) {
+  debug(`User with socketId ${this.id} wants to leave ${queue}`);
+
+  // remove user from waiting list.
+  removeUserFromQueue(queue, this.id);
+
+  // actually leave the queue.
+  this.leave(queue);
+}
+
 module.exports = function (socket) {
   io = this;
   debug(`Client ${socket.id} has connected.`);
@@ -75,4 +115,6 @@ module.exports = function (socket) {
 
   // Listening on server side when "client" join rooms.
   socket.on("join-queue", handleJoinQueue);
+
+  socket.on("leave-queue", handleLeaveQueue);
 };

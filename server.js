@@ -47,7 +47,7 @@ function normalizePort(value) {
     return port;
   }
 
-  return false;
+  return falste;
 }
 
 // Event listener for HTTP server event: "error".
