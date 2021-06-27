@@ -59,11 +59,11 @@ function setWaitingListForQueue(queue, waitingList) {
 function handleUserDisconnect() {
   debug(`Client ${this.id} disconnected`);
 
-  const room = Object.keys(queues).queueNames.find((queue) =>
+  const queue = Object.keys(queues).queueNames.find((queue) =>
     queues[queue].waitingList.find((user) => user.socketId === this.id)
   );
 
-  if (room) {
+  if (queue) {
     debug(`Found socket still in queue '${queue}', removing...`);
     removeUserFromQueue(queue, this.id);
   }
