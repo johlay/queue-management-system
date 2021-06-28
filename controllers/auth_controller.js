@@ -35,7 +35,7 @@ const login = async (req, res) => {
     });
   }
 
-  // validate password against stored hash
+  // validate password against stored hash.
   if (!(await bcrypt.compare(req.body.password, user.password))) {
     debug(`Password for '${req.body.email}' did not match hash:`);
     return res.status(403).send({
@@ -44,7 +44,7 @@ const login = async (req, res) => {
     });
   }
 
-  // Construct payload
+  // Construct payload.
   const payload = {
     data: user,
   };

@@ -14,7 +14,7 @@ const authController = require("../controllers/auth_controller");
 // Auth - Middleware
 const { validateJwtToken } = require("../controllers/middleware/auth");
 
-// Route - sxtract token
+// Extract token
 router.use(extractToken());
 
 router.get("/", (req, res) => {
@@ -24,7 +24,7 @@ router.get("/", (req, res) => {
 router.post("/login", authController.login);
 router.post("/register", authController.register);
 
-// To protect route for "/queues" - we implement an array [] by using "verifyToken()"
+// To protect route for "/queues" - implementing an array [] by using "verifyToken()"
 router.use("/queues", [validateJwtToken], require("./queues"));
 
 module.exports = router;

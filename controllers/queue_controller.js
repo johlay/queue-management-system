@@ -21,7 +21,7 @@ const queue_list = async (req, res) => {
       },
     });
   } catch (error) {
-    debug("Exception thrown in room_controller@index", error);
+    debug("Exception thrown in queue_controller", error);
 
     return res.status(500).send({
       status: "error",

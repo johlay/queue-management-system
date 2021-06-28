@@ -4,18 +4,20 @@
 
 const express = require("express");
 const router = express.Router();
-const queues = require("../controllers/queue_controller");
+
+// Import controller
+const queueController = require("../controllers/queue_controller");
 
 /* Get all rooms */
-router.get("/", queues.queue_list);
+router.get("/", queueController.queue_list);
 
 /* Get a room */
-router.get("/:queueId", queues.queue_detail);
+router.get("/:queueId", queueController.queue_detail);
 
 /* Add user to a room */
-router.post("/:queueId/user", queues.addUser);
+router.post("/:queueId/user", queueController.addUser);
 
 /* Delete a user from a room */
-router.delete("/:queueId/user/:userId", queues.removeUser);
+router.delete("/:queueId/user/:userId", queueController.removeUser);
 
 module.exports = router;
