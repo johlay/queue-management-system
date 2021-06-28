@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import config from "../../modules/config";
 
 class QueueList extends React.Component {
   state = {
@@ -9,16 +10,20 @@ class QueueList extends React.Component {
   };
 
   componentDidMount() {
-    axios.get("http://localhost:3001/queues").then((res) => {
-      console.log("Got response!", res);
-      if (res.data.status === "success") {
-        const queues = res.data.data.queues;
-        this.setState({
-          loading: false,
-          queuelist: queues,
-        });
-      }
-    });
+    axios
+      .get(config.API_HOST + "/queues", {
+        headers: { Authorization: "Bearer " + config.getToken() },
+      })
+      .then((res) => {
+        console.log("Got response!", res);
+        if (res.data.status === "success") {
+          const queues = res.data.data.queues;
+          this.setState({
+            loading: false,
+            queuelist: queues,
+          });
+        }
+      });
   }
 
   componentWillUnmount() {}

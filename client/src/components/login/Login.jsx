@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import config from "../../modules/config";
 
 class Login extends React.Component {
   state = {
@@ -19,13 +20,16 @@ class Login extends React.Component {
     console.log("Authenticating with:", this.state);
 
     axios
-      .post("http://localhost:3001/login", this.state)
+      .post(config.API_HOST + "/login", this.state)
       .then((res) => {
         console.log("Received response from login:", res.data);
-        const token = res.data.data.access_token;
+        const access_token = res.data.data.access_token;
 
-        // Using props(handler) from App.js.
-        this.props.onLogin(token);
+        // Using setToken from config file to save "access_token" to sessionStorage.
+        config.setToken(access_token);
+
+        // Navigate to: "/queue".
+        this.props.history.push("/queue");
       })
       .catch((err) => {
         console.error(err);
