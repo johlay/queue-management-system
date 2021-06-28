@@ -10,8 +10,7 @@ import "./App.scss";
 
 class App extends React.Component {
   state = {
-    queue: null,
-    waitingList: null,
+    token: false,
   };
 
   componentDidMount() {}
@@ -22,6 +21,12 @@ class App extends React.Component {
     socket.disconnect();
   }
 
+  handleOnLogin = (token) => {
+    console.log("Setting token in App state", token);
+
+    this.setState({ token: token });
+  };
+
   render() {
     return (
       <div className="App">
@@ -29,7 +34,11 @@ class App extends React.Component {
           <Navigation />
           <main role="main" className="container my-3">
             <Switch>
-              <Route exact path="/" component={Login} />
+              <Route
+                exact
+                path="/"
+                render={() => <Login onLogin={this.handleOnLogin} />}
+              />
               <Route path="/queue" component={QueueList} />
               <Route path="/queue/:id" component={Queue} />
               <Route component={NotFound} />

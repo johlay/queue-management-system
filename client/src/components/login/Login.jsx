@@ -1,11 +1,10 @@
 import React from "react";
-import socket from "../../modules/socket-client";
+import axios from "axios";
 
 class Login extends React.Component {
   state = {
-    name: "",
-    location: "",
-    queue: "queue1",
+    email: "",
+    password: "",
   };
 
   handleOnChange = (e) => {
@@ -17,21 +16,22 @@ class Login extends React.Component {
     e.preventDefault();
 
     // Log - delete this.
-    console.log(
-      "Emitting 'join-queue' to Socket.IO-server with the following payload:",
-      this.state
-    );
+    console.log("Authenticating with:", this.state);
 
-    // Emits a "payload" when user/client join room.
-    socket.emit("join-queue", this.state, (status) => {
-      console.log(
-        "Got response to 'join-queue' event from the server:",
-        status
-      );
+    axios
+      .post("http://localhost:3001/login", this.state)
+      .then((res) => {
+        console.log("Received response from login:", res.data);
+        const token = res.data.data.access_token;
 
-      this.props.history.push(`/queue/${status.queue}`);
-    });
+        // Using props(handler) from App.js.
+        this.props.onLogin(token);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
+
   render() {
     return (
       <div className="component-Login">
@@ -42,40 +42,27 @@ class Login extends React.Component {
 
         <form autoComplete="off" id="login-form" onSubmit={this.handleOnSubmit}>
           <div className="form-group">
-            <label htmlFor="name">Name</label>
+            <label htmlFor="naemailme">Email</label>
             <input
               autoComplete="false"
-              type="text"
-              id="name"
+              type="email"
+              id="email"
               className="form-control"
               onChange={this.handleOnChange}
-              placeholder="Enter your name"
+              placeholder="Enter your email"
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="location">Location</label>
+            <label htmlFor="password">Password</label>
             <input
               autoComplete="false"
-              type="text"
-              id="location"
+              type="password"
+              id="password"
               className="form-control"
               onChange={this.handleOnChange}
-              placeholder="Enter your location"
+              placeholder="Enter your password"
             />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="channel">Channel</label>
-            <select
-              id="queue"
-              className="form-control"
-              onChange={this.handleOnChange}
-            >
-              <option value="queue1">Queue 1</option>
-              <option value="queue2">Queue 2</option>
-              <option value="queue3">Queue 3</option>
-            </select>
           </div>
 
           <div className="d-flex justify-content-end mt-3">
