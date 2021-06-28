@@ -3,8 +3,10 @@
  */
 
 const debug = require("debug")("queue-management-system:socket");
-
 const queues = {};
+
+// JWT
+const jwt = require("jsonwebtoken");
 
 // Add an user to a queue.
 function addUserToQueue(queue, name, location, socketId) {
@@ -31,7 +33,7 @@ function removeUserFromQueue(queue, socketId) {
   setWaitingListForQueue(queue, waitingList);
 
   // send the updated waiting list to all other users in the queue.
-  this.broadcast.to(queue).emit("updated-waiting-list", {
+  io.to(queue).emit("updated-waiting-list", {
     queue,
     waitingList,
   });
@@ -70,27 +72,37 @@ function handleUserDisconnect() {
 }
 
 // Handle when user is requesting to join a queue.
-function handleJoinQueue({ name, location, queue }, callback) {
-  debug(`${name} is requesting to join #${queue}.`);
+function handleJoinQueue(data, callback) {
+  let payload;
 
-  // Join queue
-  this.join(queue);
+  try {
+    payload = jwt.verify(data.access_token, process.env.ACCESS_TOKEN_SECRET);
+  } catch (error) {
+    // Calling uppon "callback" parameter to respond with failed response.
+    callback({ joined: false, invalidToken: true });
+  }
+
+  // If JWT is verified and valid ...
+  debug(`${payload.data.name} is requesting to join #${data.queue}.`);
+
+  // Join queue.
+  this.join(data.queue);
 
   // Adding user to list of waiting users (queue)
-  addUserToQueue(queue, name, location, this.id);
+  addUserToQueue(data.queue, payload.data.name, "", this.id);
 
   // get list of waiting users in specific queue.
-  const waitingList = getWaitingListForQueue(queue);
+  const waitingList = getWaitingListForQueue(data.queue);
 
   // Send back list of users waiting in queue.
   callback({
-    queue: queue,
+    joined: true,
+    waitingList: waitingList,
   });
 
   // Send the updated waiting list to all other users in the room.
-  this.broadcast.to(queue).emit("updated-waiting-list", {
-    queue: queue,
-    waitingList,
+  this.broadcast.to(data.queue).emit("updated-waiting-list", {
+    waitingList: waitingList,
   });
 }
 
@@ -113,7 +125,7 @@ module.exports = function (socket) {
 
   socket.on("get-waiting-list", handleGetWaitingList);
 
-  // Listening on server side when "client" join rooms.
+  // Listening on server side when "client" join queues.
   socket.on("join-queue", handleJoinQueue);
 
   socket.on("leave-queue", handleLeaveQueue);

@@ -25,7 +25,7 @@ class App extends React.Component {
           <main role="main" className="container my-3">
             <Switch>
               <Route exact path="/" render={(props) => <Login {...props} />} />
-              <Route path="/queue" component={QueueList} />
+              <Route exact path="/queue" component={QueueList} />
               <Route path="/queue/:id" component={Queue} />
               <Route component={NotFound} />
             </Switch>
